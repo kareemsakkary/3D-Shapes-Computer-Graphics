@@ -183,6 +183,10 @@ void Draw3DBuilding() {
     DrawDoor();
 }
 
+void Draw3DBicycle() {
+
+}
+
 void Display() {
     // clear background to BG color to draw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,8 +194,10 @@ void Display() {
     glLoadIdentity();
     // camera positions
     gluLookAt(Cx, Cy, Cz, 0, 0, 0, 0, 1, 0);
-    // start drawing
+    // start drawing the building
     Draw3DBuilding();
+    // start drawing the bicycle
+    Draw3DBicycle();
     // save drawing changes
     glutSwapBuffers();
 }
