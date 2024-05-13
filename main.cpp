@@ -241,6 +241,22 @@ void Key(unsigned char ch, int x, int y) {
     case 'C':
         // TO BE IMPLEMENTED
         break;
+    // move bicycle in forward x-axis direction
+    case 'f':
+        // TO BE IMPLEMENTED
+        break;
+    // move bicycle in backward x-axis direction
+    case 'b':
+        // TO BE IMPLEMENTED
+        break;
+    // rotate right wheel of bicycle 
+    case 'r':
+        // TO BE IMPLEMENTED
+        break;
+    // rotate left wheel of bicycle 
+    case 'l':
+        // TO BE IMPLEMENTED
+        break;
     }
     glutPostRedisplay();
 }
@@ -256,7 +272,7 @@ int main(int argC, char *argV[])
     // display mode initialization
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     // create window
-    glutCreateWindow("3D Building");
+    glutCreateWindow("3D Shapes");
     // initialization function for window
     MyInit();
     // display function for window
