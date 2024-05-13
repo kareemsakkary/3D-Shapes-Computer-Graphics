@@ -142,20 +142,6 @@ void DrawSingleFloor(GLfloat V0[], GLfloat V1[], GLfloat V2[], GLfloat V3[],
 void DrawFloors() {
     GLfloat VFloor1[8][3] = {
         // front
-        {-0.5f, 0.5f, 0.5f},    // Top-left 
-        {0.5f, 0.5f, 0.5f},     // Top-right 
-        {0.5f, 0.0f, 0.5f},    // Bottom-right 
-        {-0.5f, 0.0f, 0.5f},   // Bottom-left
-
-        // back
-        {-0.5f, 0.5f, -0.5f},   // Top-left
-        {0.5f, 0.5f, -0.5f},    // Top-right
-        {0.5f, 0.0f, -0.5f},   // Bottom-right
-        {-0.5f, 0.0f, -0.5f}   // Bottom-left 
-    };
-
-    GLfloat VFloor2[8][3] = {
-        // front
         {-0.5f, 0.0f, 0.5f},    // Top-left 
         {0.5f, 0.0f, 0.5f},     // Top-right 
         {0.5f, -0.5f, 0.5f},    // Bottom-right 
@@ -167,11 +153,25 @@ void DrawFloors() {
         {0.5f, -0.5f, -0.5f},   // Bottom-right
         {-0.5f, -0.5f, -0.5f}   // Bottom-left 
     };
+
+    GLfloat VFloor2[8][3] = {
+        // front
+        {-0.5f, 0.5f, 0.5f},    // Top-left 
+        {0.5f, 0.5f, 0.5f},     // Top-right 
+        {0.5f, 0.0f, 0.5f},    // Bottom-right 
+        {-0.5f, 0.0f, 0.5f},   // Bottom-left
+
+        // back
+        {-0.5f, 0.5f, -0.5f},   // Top-left
+        {0.5f, 0.5f, -0.5f},    // Top-right
+        {0.5f, 0.0f, -0.5f},   // Bottom-right
+        {-0.5f, 0.0f, -0.5f}   // Bottom-left 
+    };
     // first floor
-    LIGHT_BLUE
+    LIGHT_GRAY
     DrawSingleFloor(VFloor1[0], VFloor1[1], VFloor1[2], VFloor1[3], VFloor1[4], VFloor1[5], VFloor1[6], VFloor1[7]);
     // second floor
-    LIGHT_GRAY
+    LIGHT_BLUE
     DrawSingleFloor(VFloor2[0], VFloor2[1], VFloor2[2], VFloor2[3], VFloor2[4], VFloor2[5], VFloor2[6], VFloor2[7]);
 }
 
