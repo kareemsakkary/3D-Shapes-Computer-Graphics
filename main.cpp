@@ -88,16 +88,6 @@ void DrawRectangle(GLfloat V0[], GLfloat V1[], GLfloat V2[], GLfloat V3[]) {
     glEnd();
 }
 
-void DrawGround() {
-    GLfloat V[4][3] = {
-        {-10.0, -0.501, -10.0},
-        {-10.0, -0.501, 10.0},
-        {10.0, -0.501, 10.0},
-        {10.0, -0.501, -10.0},
-    };
-    GRAY
-    DrawRectangle(V[0], V[1], V[2], V[3]);
-}
 
 void openDoor() {
     if (openedDoor) {
@@ -294,16 +284,6 @@ void Spin() {
     glutPostRedisplay();
 }
 
-//void drawCircle(float cx, float cy, float r, int numSegments) {
-//    glBegin(GL_TRIANGLE_FAN);
-//    for (int i = 0; i < numSegments; ++i) {
-//        float theta = 2.0 * 3.14 * static_cast<float>(i) / static_cast<float>(numSegments);
-//        float x = r * cos(theta);
-//        float y = r * sin(theta);
-//        glVertex2f(x + cx, y + cy);
-//    }
-//    glEnd();
-//}
 
 void Cylinder(GLfloat radius, GLfloat length, float pX, float pY, float pZ, float angle,bool planXY = true)
 {
@@ -320,6 +300,8 @@ void Cylinder(GLfloat radius, GLfloat length, float pX, float pY, float pZ, floa
     glPopMatrix();
 }
 
+
+
 void DrawWheel(float cx, float cy , float cz) {
 	// draw the wheel
     glPushMatrix();
@@ -335,7 +317,7 @@ void DrawLeftWheel(){
 
     DrawWheel(leftWheelCenterX, leftWheelCenterY, -leftWheelCenterZ);
 
-    glColor3f(1, 0, 0);
+    glColor3f(0, 0, 0);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, -55);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ + 0.03, -55);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, 0);
@@ -349,7 +331,7 @@ void DrawRightWheel() {
     glRotatef(wheelAngle, 0, 1,0);
     glTranslatef(-(leftWheelCenterX + 0.35), -leftWheelCenterY, leftWheelCenterZ); //move object to center
     DrawWheel(leftWheelCenterX + 0.35, leftWheelCenterY, -leftWheelCenterZ);
-    glColor3f(1, 0, 0);
+    glColor3f(0, 0, 0);
     Cylinder(0.01, 0.1, leftWheelCenterX + 0.32, leftWheelCenterY + 0.09, leftWheelCenterZ - 0.03, 70);
     Cylinder(0.01, 0.1, leftWheelCenterX + 0.32, leftWheelCenterY + 0.09, leftWheelCenterZ + 0.03, 70);
     Cylinder(0.01, 0.18, leftWheelCenterX + 0.26, leftWheelCenterY + 0.25, leftWheelCenterZ, 70);
@@ -361,7 +343,7 @@ void DrawRightWheel() {
     
 }
 void DrawBody() {
-    glColor3f(1, 0, 0);
+    glColor3f(0, 0, 0);
     Cylinder(0.01, 0.12, leftWheelCenterX + 0.05, leftWheelCenterY+0.08,leftWheelCenterZ, -55);
     Cylinder(0.01, 0.04, leftWheelCenterX + 0.10, leftWheelCenterY,leftWheelCenterZ, 0);
     Cylinder(0.01, 0.25, leftWheelCenterX + 0.15, leftWheelCenterY - 0.005,leftWheelCenterZ, -100);
@@ -377,7 +359,7 @@ void DrawSeat() {
     /*********************************
     *   Draw the top of the seat
     **********************************/
-    glColor3f(1, 0, 0);
+    glColor3f(0, 0, 0);
     glBegin(GL_POLYGON);
     glVertex3f(X, Y, Z);
     glVertex3f(X + 0.03, Y, Z);
@@ -465,7 +447,7 @@ void Draw3DBicycle() {
    
     leftWheelCenterX = byciclePosX;
     leftWheelCenterY = -0.41;
-    leftWheelCenterZ = -1.5;
+    leftWheelCenterZ = -1.3;
     glPushMatrix();
     glRotatef(bycicleRotation, 0, 1, 0);
 
@@ -479,6 +461,44 @@ void Draw3DBicycle() {
     DrawSeat();
 
     glPopMatrix();
+}
+
+
+void drawCircle(float cx, float cy, float cz, float r, int numSegments) {
+    
+    glBegin(GL_TRIANGLE_FAN);
+    for (int i = 0; i < numSegments; ++i) {
+        float theta = 2.0 * 3.14 * static_cast<float>(i) / static_cast<float>(numSegments);
+        float x = r * cos(theta);
+        float y = r * sin(theta);
+        glVertex3f(x + cx, y + cy, cz);
+    }
+    glEnd();
+}
+void DrawRoundStreet(float cx, float cy, float cz) {
+    // draw the wheel
+    glPushMatrix();
+    glTranslatef(cx, cy, cz);
+    glRotatef(90, 1, 0, 0);
+    WHITE
+    drawCircle(0, 0, 0.51, 2, 100);
+    GRAY
+    drawCircle(0, 0, 0.505, 1.8, 100);
+    BLACK
+    drawCircle(0, 0, 0.50, 1, 100);
+    glPopMatrix();
+}
+void DrawGround() {
+   /* GLfloat V[4][3] = {
+        {-10.0, -0.501, -10.0},
+        {-10.0, -0.501, 10.0},
+        {10.0, -0.501, 10.0},
+        {10.0, -0.501, -10.0},
+    };
+    GRAY
+        DrawRectangle(V[0], V[1], V[2], V[3]);*/
+    DrawRoundStreet(0, 0, 0);
+
 }
 
 void Display() {
@@ -505,7 +525,6 @@ void Display() {
 void idle() {
     if (isMoving) {
         wheelAngle = 15;
-        cout << bycicleRotation << endl;
         bycicleRotation += 0.5;
         degree += 0.5;
         if (bycicleRotation > 360)
@@ -624,8 +643,11 @@ void Key(unsigned char ch, int x, int y) {
 }
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		isMoving = !isMoving;
+		isMoving = true;
 	}
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        isMoving = false;
+    }
 	glutPostRedisplay();
 }
 int main(int argC, char *argV[])
