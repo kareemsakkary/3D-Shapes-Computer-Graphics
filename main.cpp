@@ -277,13 +277,6 @@ void Draw3DBuilding() {
     DrawWindows();
 }
 
-void Spin() {
-    degree = degree + 0.25;
-    if (degree > 360)
-        degree = 0;
-    glutPostRedisplay();
-}
-
 
 void Cylinder(GLfloat radius, GLfloat length, float pX, float pY, float pZ, float angle,bool planXY = true)
 {
@@ -323,12 +316,12 @@ void DrawLeftWheel(){
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, 0);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ + 0.03, 0);
 }
-void DrawRightWheel() {
+void DrawRightWheel(int f) {
     //DrawWheel (- 0.45, leftWheelCenterY, -leftWheelCenterZ);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(leftWheelCenterX + 0.35, leftWheelCenterY, -leftWheelCenterZ); // move back to focus of gluLookAt
-    glRotatef(wheelAngle, 0, 1,0);
+    glRotatef(wheelAngle, 0, f,0);
     glTranslatef(-(leftWheelCenterX + 0.35), -leftWheelCenterY, leftWheelCenterZ); //move object to center
     DrawWheel(leftWheelCenterX + 0.35, leftWheelCenterY, -leftWheelCenterZ);
     glColor3f(0, 0, 0);
@@ -446,15 +439,41 @@ void DrawSeat() {
 void Draw3DBicycle() {
    
     leftWheelCenterX = byciclePosX;
-    leftWheelCenterY = -0.41;
-    leftWheelCenterZ = -1.3;
+    leftWheelCenterY = -0.4;
+    leftWheelCenterZ = -1.2;
     glPushMatrix();
     glRotatef(bycicleRotation, 0, 1, 0);
 
     // draw left wheel
     DrawLeftWheel();
     // draw right wheel
-    DrawRightWheel();
+    DrawRightWheel(1);
+    // draw body
+    DrawBody();
+    // draw seat
+    DrawSeat();
+
+    glPopMatrix();
+}
+
+void Draw3DBicycle2() {
+
+    leftWheelCenterX = -byciclePosX;
+    leftWheelCenterY = -0.4;
+    leftWheelCenterZ = -1.6;
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glRotatef(bycicleRotation, 0, -1, 0);
+    glTranslatef(leftWheelCenterX, leftWheelCenterY, -leftWheelCenterZ); // move back to focus of gluLookAt
+    glRotatef(180, 0, 1, 0);
+
+    glTranslatef(-(leftWheelCenterX), -leftWheelCenterY, leftWheelCenterZ); //move object to center
+
+    // draw left wheel
+    DrawLeftWheel();
+    // draw right wheel
+    DrawRightWheel(-1);
     // draw body
     DrawBody();
     // draw seat
@@ -475,6 +494,7 @@ void drawCircle(float cx, float cy, float cz, float r, int numSegments) {
     }
     glEnd();
 }
+
 void DrawRoundStreet(float cx, float cy, float cz) {
     // draw the wheel
     glPushMatrix();
@@ -489,16 +509,7 @@ void DrawRoundStreet(float cx, float cy, float cz) {
     glPopMatrix();
 }
 void DrawGround() {
-   /* GLfloat V[4][3] = {
-        {-10.0, -0.501, -10.0},
-        {-10.0, -0.501, 10.0},
-        {10.0, -0.501, 10.0},
-        {10.0, -0.501, -10.0},
-    };
-    GRAY
-        DrawRectangle(V[0], V[1], V[2], V[3]);*/
     DrawRoundStreet(0, 0, 0);
-
 }
 
 void Display() {
@@ -519,6 +530,7 @@ void Display() {
     Draw3DBuilding();
     // start drawing the bicycle
     Draw3DBicycle();
+    Draw3DBicycle2();
     // save drawing changes
     glutSwapBuffers();
 }
