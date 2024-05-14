@@ -503,9 +503,22 @@ void spinBicycle() {
 
 }
 
+void drawDottedCircles() {
+    // some dotted circles within dark gray circle space to separate street direction 
+    for (int i = 0; i < 10; ++i) {
+        // calculate angle for each dotted circle
+        float angle = i * (360.0 / 10);
+        float x = 1.41 * cos(angle * 3.14 / 180.0);
+        float y = 1.41 * sin(angle * 3.14 / 180.0);
+        WHITE
+        drawCircle(x, y, 0.49, 0.07, 100);
+    }
+}
+
 // ------------------- CIRCULAR STREET FUNCTION ----------------------------------------
 void drawRoundStreet() {
     glPushMatrix();
+
     glRotatef(90, 1, 0, 0);
     // first circle
     WHITE
@@ -516,6 +529,9 @@ void drawRoundStreet() {
     // third circle
     GRAY
     drawCircle(0, 0, 0.50, 1, 100);
+    // dotted circles
+    drawDottedCircles();
+
     glPopMatrix();
 }
 
