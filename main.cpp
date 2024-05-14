@@ -16,7 +16,7 @@
 #define LIGHT_BLUE glColor3f(0.69, 0.77, 0.87);
 
 // dimensions for camera
-GLfloat Cx = 0, Cy = 0, Cz = 4.0, degree = 0;
+GLfloat Cx = 0, Cy = 0.8, Cz = 4.2, degree = 0;
 bool rotation = false;
 GLfloat angleX = 0.45;
 GLfloat angleY = 0.0;
@@ -295,7 +295,7 @@ void draw3DBuilding() {
     drawWindows();
 }
 
-// ------------------- 3D BICYLE FUNCTIONS ----------------------------------------
+// ------------------- 3D BICYCLE FUNCTIONS ----------------------------------------
 void drawCylinder(GLfloat radius, GLfloat length, float pX, float pY, float pZ, float angle,bool planeXY = true)
 {
     GLUquadricObj* cylinder;
@@ -510,7 +510,6 @@ void drawDottedCircles() {
         float angle = i * (360.0 / 10);
         float x = 1.41 * cos(angle * 3.14 / 180.0);
         float y = 1.41 * sin(angle * 3.14 / 180.0);
-        WHITE
         drawCircle(x, y, 0.49, 0.07, 100);
     }
 }
@@ -529,6 +528,7 @@ void drawCircularStreet() {
     GRAY
     drawCircle(0, 0, 0.50, 1, 100);
     // some dotted circles within dark gray circle space to separate street direction 
+    WHITE
     drawDottedCircles();
 
     glPopMatrix();
