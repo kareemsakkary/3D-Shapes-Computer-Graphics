@@ -2,6 +2,7 @@
 #include <gl/glu.h>
 #include <gl/glut.h>
 #include <cmath>
+#include <iostream>
 
 // define colors
 #define WHITE glColor3f(1.0, 1.0, 1.0);
@@ -14,7 +15,24 @@
 
 bool openedWindows = false, openedDoor = false;
 // dimensions for camera
-GLfloat Cx = 0, Cy = 0, Cz = 3.0, degree = 0;
+GLfloat Cx = 0, Cy = 0, Cz = 4.0, degree = 0;
+bool rotation = false;
+GLfloat angleX = 0.0;
+GLfloat angleY = 0.0;
+GLfloat angleZ = 0.0;
+
+
+float leftWheelCenterX = 0.0;
+float leftWheelCenterY = 0.0;
+float leftWheelCenterZ = 0.0;
+
+GLfloat posX = 0;
+GLfloat posY = 0;
+GLfloat posZ =-0.60;
+GLfloat angle = 0.0;
+GLfloat length = 0.0;
+using namespace std;
+
 
 void MyInit() {
     // background color (r, g, b, transparency)
@@ -287,8 +305,168 @@ void Spin() {
 //    glEnd();
 //}
 
-void Draw3DBicycle() {
+void Cylinder(GLfloat radius, GLfloat length, float pX, float pY, float pZ, float angle,bool planXY = true)
+{
 
+    GLUquadricObj* cylinder;
+    cylinder = gluNewQuadric();
+    //glColor3f(1, 0, 0);
+    glPushMatrix();
+    if(planXY)
+        glRotatef(90, 0.0f, 1.0f, 0.0f);
+    glTranslatef(pZ, pY, pX);
+    glRotatef(angle, 1.0f, 0.0f, 0.0f);
+    gluCylinder(cylinder, radius, radius, length, 15, 5);
+    glPopMatrix();
+}
+
+void DrawWheel(float cx, float cy , float cz) {
+	// draw the wheel
+    glPushMatrix();
+    glTranslatef(cx, cy, cz);
+    glRotatef(degree, 0, 0, 1);
+    glColor3f(0, 0, 0);
+    glutSolidTorus(0.02, 0.08, 12, 12);
+    glPopMatrix();
+
+}
+void DrawLeftWheel(){
+    // draw left wheel
+    DrawWheel(leftWheelCenterX, leftWheelCenterY, -leftWheelCenterZ);
+    glColor3f(1, 0, 0);
+    Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, -55);
+    Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ + 0.03, -55);
+    Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, 0);
+    Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ + 0.03, 0);
+}
+void DrawRightWheel() {
+    //DrawWheel (- 0.45, leftWheelCenterY, -leftWheelCenterZ);
+    DrawWheel(leftWheelCenterX+0.35, leftWheelCenterY, -leftWheelCenterZ);
+    glColor3f(1, 0, 0);
+    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32 , leftWheelCenterY+0.09, leftWheelCenterZ - 0.03, 70);
+    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32,  leftWheelCenterY+0.09, leftWheelCenterZ + 0.03, 70);
+    Cylinder(0.01, 0.18, leftWheelCenterX + 0.26, leftWheelCenterY + 0.25, leftWheelCenterZ, 70);
+    glColor3f(0, 0, 0);
+    // draw the wheel axis
+    Cylinder(0.013, 0.14, -leftWheelCenterZ-0.07, leftWheelCenterY + 0.26, leftWheelCenterX + 0.25, 0,false);
+
+}
+void DrawBody() {
+    glColor3f(1, 0, 0);
+    Cylinder(0.01, 0.12, leftWheelCenterX + 0.05, leftWheelCenterY+0.08,leftWheelCenterZ, -55);
+    Cylinder(0.01, 0.04, leftWheelCenterX + 0.10, leftWheelCenterY,leftWheelCenterZ, 0);
+    Cylinder(0.01, 0.25, leftWheelCenterX + 0.15, leftWheelCenterY - 0.005,leftWheelCenterZ, -100);
+    Cylinder(0.01, 0.20, leftWheelCenterX + 0.15, leftWheelCenterY - 0.005,leftWheelCenterZ, -60);
+    Cylinder(0.01, 0.15, leftWheelCenterX + 0.12, leftWheelCenterY + 0.18,leftWheelCenterZ, 0);
+    glColor3f(0, 0, 0);
+    Cylinder(0.01, 0.04, -leftWheelCenterZ - 0.02, leftWheelCenterY - 0.005, leftWheelCenterX + 0.15, 0, false);
+}
+
+void DrawSeat() {
+    float X = leftWheelCenterX+0.06, Y = leftWheelCenterY + 0.26, Z = -leftWheelCenterZ+0.04;
+
+    /*********************************
+    *   Draw the top of the seat
+    **********************************/
+    glColor3f(1, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex3f(X, Y, Z);
+    glVertex3f(X + 0.03, Y, Z);
+    glVertex3f(X + 0.06, Y, Z - 0.02);
+    glVertex3f(X + 0.12, Y, Z - 0.03);
+    glVertex3f(X + 0.12, Y, Z - 0.05);
+    glVertex3f(X + 0.06, Y, Z - 0.06);
+    glVertex3f(X + 0.03, Y, Z - 0.08);
+    glVertex3f(X, Y, Z - 0.08);
+    glEnd();
+
+
+    ///**********************************
+    //*   Draw the bottom base part of the
+    //*   seat
+    //************************************/
+    glColor3f(0, 0, 0);
+    glBegin(GL_POLYGON);
+    glVertex3f(X, Y - 0.02, Z);
+    glVertex3f(X + 0.03, Y - 0.02, Z);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.02);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.03);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.05);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.06);
+    glVertex3f(X + 0.03, Y - 0.02, Z - 0.08);
+    glVertex3f(X, Y - 0.02, Z - 0.08);
+    glEnd();
+
+    ///**********************
+    //*   Draw the sides!
+    //***********************/
+    glBegin(GL_QUADS);
+    glColor3f(0, 0, 0);
+
+    glVertex3f(X, Y, Z);
+    glVertex3f(X, Y, Z - 0.08);
+    glVertex3f(X, Y - 0.02, Z - 0.08);
+    glVertex3f(X, Y - 0.02, Z);
+
+
+    glVertex3f(X, Y, Z);
+    glVertex3f(X + 0.03, Y, Z);
+    glVertex3f(X + 0.03, Y - 0.02, Z);
+    glVertex3f(X, Y - 0.02, Z);
+
+   
+   
+    glVertex3f(X, Y - 0.02, Z - 0.08);
+    glVertex3f(X + 0.03, Y - 0.02, Z - 0.08);
+    glVertex3f(X + 0.03, Y, Z - 0.08);
+    glVertex3f(X, Y, Z - 0.08);
+
+
+    glVertex3f(X + 0.03, Y, Z);
+    glVertex3f(X + 0.06, Y, Z - 0.02);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.02);
+    glVertex3f(X + 0.03, Y - 0.02, Z);
+
+    glVertex3f(X + 0.03, Y, Z - 0.08);
+    glVertex3f(X + 0.06, Y, Z - 0.06);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.06);
+    glVertex3f(X + 0.03, Y - 0.02, Z - 0.08);
+
+
+    glVertex3f(X + 0.06, Y, Z - 0.02);
+    glVertex3f(X + 0.12, Y, Z - 0.03);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.03);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.02);
+
+    glVertex3f(X + 0.06, Y, Z - 0.06);
+    glVertex3f(X + 0.12, Y, Z - 0.05);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.05);
+    glVertex3f(X + 0.06, Y - 0.02, Z - 0.06);
+
+    glVertex3f(X + 0.12, Y, Z - 0.03);
+    glVertex3f(X + 0.12, Y, Z - 0.05);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.05);
+    glVertex3f(X + 0.12, Y - 0.02, Z - 0.03);
+
+
+    glEnd();
+}
+
+void Draw3DBicycle() {
+    cout << "posX: " << posX << " posY: " << posY << " posZ : " << posZ << endl;
+    cout << "angle: " << angle << " len : " << length << endl;
+    leftWheelCenterX = posX;
+    leftWheelCenterY = posY;
+    leftWheelCenterZ = posZ;
+
+    // draw left wheel
+    DrawLeftWheel();
+    // draw right wheel
+    DrawRightWheel();
+    // draw body
+    DrawBody();
+    // draw seat
+    DrawSeat();
 }
 
 void Display() {
@@ -298,6 +476,10 @@ void Display() {
     glLoadIdentity();
     // camera positions
     gluLookAt(Cx, Cy, Cz, 0, 0, 0, 0, 1, 0);
+    // rotate the scene
+    glRotatef(angleX, 1.0, 0.0, 0.0);
+    glRotatef(angleY, 0.0, 1.0, 0.0);
+    glRotatef(angleZ, 0.0, 0.0, 1.0);
     // draw ground
     DrawGround();
     // start drawing the building
@@ -312,24 +494,42 @@ void Key(unsigned char ch, int x, int y) {
     switch (ch) {
         // camera pos x
     case 'x':
-        Cx -= 0.5;
+        if(rotation)
+            angleX += 5.0;
+		else
+			Cx -= 0.01;
         break;
     case 'X':
-        Cx += 0.5;
+        if(rotation)
+			angleX -= 5.0;
+        else
+            Cx += 0.01;
         break;
         // camera pos y
     case 'y':
-        Cy -= 0.5;
+        if(rotation)
+			angleY += 5.0;
+		else
+			Cy -= 0.01;
         break;
     case 'Y':
-        Cy += 0.5;
+        if(rotation)
+            angleY -= 5.0;
+		else
+            Cy += 0.01;
         break;
         // camera pos z
     case 'z':
-        Cz -= 0.5;
+        if(rotation)
+			angleZ += 5.0;
+        else
+            Cz -= 0.01;
         break;
     case 'Z':
-        Cz += 0.5;
+        if(rotation)
+            angleZ -= 5.0;
+		else
+            Cz += 0.01;
         break;
         // open the door
     case 'o':
@@ -356,13 +556,48 @@ void Key(unsigned char ch, int x, int y) {
         // TO BE IMPLEMENTED
         break;
         // rotate right wheel of bicycle 
-    case 'r':
+   // case 'r':
         // TO BE IMPLEMENTED
-        break;
+       // break;
         // rotate left wheel of bicycle 
     case 'l':
         // TO BE IMPLEMENTED
         break;
+    case 's':
+        rotation = !rotation;
+        std::cout << "rotation: " <<  rotation << std::endl;
+        break;
+    case 'w':
+        posX +=0.01;
+        break;
+    case 'W':
+		posX -=0.01;
+		break;
+    case 'q':
+        posY +=0.01;
+		break;
+    case 'Q':
+        posY -=0.01;
+        break;
+
+    case 'e':
+        posZ +=0.01;
+		break;
+    case 'E':
+		posZ -=0.01;
+		break;
+    case 'r':
+        angle += 5.0;
+        break;
+    case 'R':
+        angle -= 5.0;
+		break;
+    case 't':
+		length += 0.1;
+		break;
+    case 'T':
+        length -= 0.1;
+
     }
     glutPostRedisplay();
 }
