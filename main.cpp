@@ -17,7 +17,7 @@ bool openedWindows = false, openedDoor = false;
 // dimensions for camera
 GLfloat Cx = 0, Cy = 0, Cz = 4.0, degree = 0;
 bool rotation = false;
-GLfloat angleX = 0.0;
+GLfloat angleX = 0.45;
 GLfloat angleY = 0.0;
 GLfloat angleZ = 0.0;
 
@@ -26,11 +26,11 @@ float leftWheelCenterX = 0.0;
 float leftWheelCenterY = 0.0;
 float leftWheelCenterZ = 0.0;
 
-GLfloat posX = 0;
-GLfloat posY = 0;
-GLfloat posZ =-0.60;
-GLfloat angle = 0.0;
-GLfloat length = 0.0;
+GLfloat byciclePosX = 0;
+GLfloat wheelAngle = 0.0;
+GLfloat bycicleRotation = 0.0;
+bool isMoving = false;
+
 using namespace std;
 
 
@@ -324,7 +324,7 @@ void DrawWheel(float cx, float cy , float cz) {
 	// draw the wheel
     glPushMatrix();
     glTranslatef(cx, cy, cz);
-    glRotatef(degree, 0, 0, 1);
+    glRotatef(-degree, 0, 0, 1);
     glColor3f(0, 0, 0);
     glutSolidTorus(0.02, 0.08, 12, 12);
     glPopMatrix();
@@ -332,7 +332,9 @@ void DrawWheel(float cx, float cy , float cz) {
 }
 void DrawLeftWheel(){
     // draw left wheel
+
     DrawWheel(leftWheelCenterX, leftWheelCenterY, -leftWheelCenterZ);
+
     glColor3f(1, 0, 0);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ - 0.03, -55);
     Cylinder(0.01, 0.1, leftWheelCenterX, leftWheelCenterY, leftWheelCenterZ + 0.03, -55);
@@ -341,15 +343,22 @@ void DrawLeftWheel(){
 }
 void DrawRightWheel() {
     //DrawWheel (- 0.45, leftWheelCenterY, -leftWheelCenterZ);
-    DrawWheel(leftWheelCenterX+0.35, leftWheelCenterY, -leftWheelCenterZ);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(leftWheelCenterX + 0.35, leftWheelCenterY, -leftWheelCenterZ); // move back to focus of gluLookAt
+    glRotatef(wheelAngle, 0, 1,0);
+    glTranslatef(-(leftWheelCenterX + 0.35), -leftWheelCenterY, leftWheelCenterZ); //move object to center
+    DrawWheel(leftWheelCenterX + 0.35, leftWheelCenterY, -leftWheelCenterZ);
     glColor3f(1, 0, 0);
-    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32 , leftWheelCenterY+0.09, leftWheelCenterZ - 0.03, 70);
-    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32,  leftWheelCenterY+0.09, leftWheelCenterZ + 0.03, 70);
+    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32, leftWheelCenterY + 0.09, leftWheelCenterZ - 0.03, 70);
+    Cylinder(0.01, 0.1, leftWheelCenterX + 0.32, leftWheelCenterY + 0.09, leftWheelCenterZ + 0.03, 70);
     Cylinder(0.01, 0.18, leftWheelCenterX + 0.26, leftWheelCenterY + 0.25, leftWheelCenterZ, 70);
     glColor3f(0, 0, 0);
     // draw the wheel axis
-    Cylinder(0.013, 0.14, -leftWheelCenterZ-0.07, leftWheelCenterY + 0.26, leftWheelCenterX + 0.25, 0,false);
+    Cylinder(0.013, 0.14, -leftWheelCenterZ - 0.07, leftWheelCenterY + 0.26, leftWheelCenterX + 0.25, 0, false);
+    glPopMatrix();
 
+    
 }
 void DrawBody() {
     glColor3f(1, 0, 0);
@@ -357,7 +366,7 @@ void DrawBody() {
     Cylinder(0.01, 0.04, leftWheelCenterX + 0.10, leftWheelCenterY,leftWheelCenterZ, 0);
     Cylinder(0.01, 0.25, leftWheelCenterX + 0.15, leftWheelCenterY - 0.005,leftWheelCenterZ, -100);
     Cylinder(0.01, 0.20, leftWheelCenterX + 0.15, leftWheelCenterY - 0.005,leftWheelCenterZ, -60);
-    Cylinder(0.01, 0.15, leftWheelCenterX + 0.12, leftWheelCenterY + 0.18,leftWheelCenterZ, 0);
+    Cylinder(0.01, 0.16, leftWheelCenterX + 0.12, leftWheelCenterY + 0.18,leftWheelCenterZ, 0);
     glColor3f(0, 0, 0);
     Cylinder(0.01, 0.04, -leftWheelCenterZ - 0.02, leftWheelCenterY - 0.005, leftWheelCenterX + 0.15, 0, false);
 }
@@ -453,11 +462,12 @@ void DrawSeat() {
 }
 
 void Draw3DBicycle() {
-    cout << "posX: " << posX << " posY: " << posY << " posZ : " << posZ << endl;
-    cout << "angle: " << angle << " len : " << length << endl;
-    leftWheelCenterX = posX;
-    leftWheelCenterY = posY;
-    leftWheelCenterZ = posZ;
+   
+    leftWheelCenterX = byciclePosX;
+    leftWheelCenterY = -0.41;
+    leftWheelCenterZ = -1.5;
+    glPushMatrix();
+    glRotatef(bycicleRotation, 0, 1, 0);
 
     // draw left wheel
     DrawLeftWheel();
@@ -467,9 +477,12 @@ void Draw3DBicycle() {
     DrawBody();
     // draw seat
     DrawSeat();
+
+    glPopMatrix();
 }
 
 void Display() {
+    
     // clear background to BG color to draw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // reset to default
@@ -489,11 +502,24 @@ void Display() {
     // save drawing changes
     glutSwapBuffers();
 }
+void idle() {
+    if (isMoving) {
+        wheelAngle = 15;
+        cout << bycicleRotation << endl;
+        bycicleRotation += 0.5;
+        degree += 0.5;
+        if (bycicleRotation > 360)
+			bycicleRotation = 0;
+        if(bycicleRotation > 360)
+			degree = 0;
+        glutPostRedisplay();
+    }
 
+}
 void Key(unsigned char ch, int x, int y) {
     switch (ch) {
-        // camera pos x
     case 'x':
+        // camera pos x
         if(rotation)
             angleX += 5.0;
 		else
@@ -505,8 +531,8 @@ void Key(unsigned char ch, int x, int y) {
         else
             Cx += 0.01;
         break;
-        // camera pos y
     case 'y':
+        // camera pos y
         if(rotation)
 			angleY += 5.0;
 		else
@@ -518,8 +544,8 @@ void Key(unsigned char ch, int x, int y) {
 		else
             Cy += 0.01;
         break;
-        // camera pos z
     case 'z':
+        // camera pos z
         if(rotation)
 			angleZ += 5.0;
         else
@@ -531,77 +557,77 @@ void Key(unsigned char ch, int x, int y) {
 		else
             Cz += 0.01;
         break;
-        // open the door
     case 'o':
+        // open the door
         openedDoor = true;
         break;
         // close the door
     case 'c':
         openedDoor = false;
         break;
-        // open the windows
     case 'O':
+        // open the windows
         openedWindows = true;
         break;
-        // close the windows
     case 'C':
+        // close the windows
         openedWindows = false;
         break;
-        // move bicycle in forward x-axis direction
     case 'f':
-        // TO BE IMPLEMENTED
+        // move bicycle in forward x-axis direction
+        wheelAngle = 0;
+        byciclePosX += 0.04;
+        if(byciclePosX > 1.35)
+			byciclePosX = -1.45;
+        cout << byciclePosX << endl;
+        degree += 5;
+        if(degree > 360)
+			degree = 0;
         break;
-        // move bicycle in backward x-axis direction
     case 'b':
-        // TO BE IMPLEMENTED
+        // move bicycle in backward x-axis direction
+        wheelAngle = 0;
+        byciclePosX -= 0.04;
+        if(byciclePosX < -1.50)
+            byciclePosX = 1.45;
+        degree -= 5;
+        if (degree < -360)
+            degree = 0;
         break;
-        // rotate right wheel of bicycle 
-   // case 'r':
-        // TO BE IMPLEMENTED
-       // break;
-        // rotate left wheel of bicycle 
+    case 'r':
+        // rotate right wheel of bicycle
+        if(wheelAngle < 25)
+            wheelAngle += 5.0;
+        break;
     case 'l':
-        // TO BE IMPLEMENTED
+        // rotate left wheel of bicycle
+        if(wheelAngle > -25)
+            wheelAngle -= 5.0;
         break;
     case 's':
+        // camera rotation
         rotation = !rotation;
         std::cout << "rotation: " <<  rotation << std::endl;
         break;
-    case 'w':
-        posX +=0.01;
-        break;
-    case 'W':
-		posX -=0.01;
-		break;
     case 'q':
-        posY +=0.01;
-		break;
-    case 'Q':
-        posY -=0.01;
+        // initialize all values to default
+        wheelAngle = 0;
+        byciclePosX = 0;
+        bycicleRotation = 0;
+        isMoving = false;
         break;
-
-    case 'e':
-        posZ +=0.01;
+    case 27:
+		exit(0);
 		break;
-    case 'E':
-		posZ -=0.01;
-		break;
-    case 'r':
-        angle += 5.0;
-        break;
-    case 'R':
-        angle -= 5.0;
-		break;
-    case 't':
-		length += 0.1;
-		break;
-    case 'T':
-        length -= 0.1;
-
     }
     glutPostRedisplay();
 }
-
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		isMoving = !isMoving;
+	}
+	glutPostRedisplay();
+}
 int main(int argC, char *argV[])
 {
     // initialization function
@@ -620,8 +646,13 @@ int main(int argC, char *argV[])
     glutDisplayFunc(Display);
     // keys clicked func
     glutKeyboardFunc(Key);
+    // mouse clicked func
+    glutMouseFunc(mouse);
+    // idle function
+    glutIdleFunc(idle);
     // main loop to make the window appear
     glutMainLoop();
+    
     // exit
     return 0;
 }
