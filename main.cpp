@@ -503,8 +503,8 @@ void spinBicycle() {
 
 }
 
+// ------------------- CIRCULAR STREET FUNCTIONS ----------------------------------------
 void drawDottedCircles() {
-    // some dotted circles within dark gray circle space to separate street direction 
     for (int i = 0; i < 10; ++i) {
         // calculate angle for each dotted circle
         float angle = i * (360.0 / 10);
@@ -515,8 +515,7 @@ void drawDottedCircles() {
     }
 }
 
-// ------------------- CIRCULAR STREET FUNCTION ----------------------------------------
-void drawRoundStreet() {
+void drawCircularStreet() {
     glPushMatrix();
 
     glRotatef(90, 1, 0, 0);
@@ -529,7 +528,7 @@ void drawRoundStreet() {
     // third circle
     GRAY
     drawCircle(0, 0, 0.50, 1, 100);
-    // dotted circles
+    // some dotted circles within dark gray circle space to separate street direction 
     drawDottedCircles();
 
     glPopMatrix();
@@ -548,7 +547,7 @@ void display() {
     glRotatef(angleY, 0.0, 1.0, 0.0);
     glRotatef(angleZ, 0.0, 0.0, 1.0);
     // draw circular street
-    drawRoundStreet();
+    drawCircularStreet();
     // start drawing the building
     draw3DBuilding();
     // start drawing the bicycle
@@ -714,7 +713,6 @@ int main(int argC, char *argV[])
     glutIdleFunc(spinBicycle);
     // main loop to make the window appear
     glutMainLoop();
-    
     // exit
     return 0;
 }
