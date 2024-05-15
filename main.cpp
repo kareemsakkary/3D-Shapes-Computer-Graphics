@@ -34,6 +34,7 @@ GLfloat bycicleRotation = 0.0;
 bool isMoving = false;
 
 GLfloat speed = 0.1;
+
 using namespace std;
 
 // ------------------- COMMON FUNCTIONS ----------------------------------------
@@ -445,7 +446,7 @@ void drawSeat() {
 }
 
 void draw3DBicycle() {
-    // draw bicycle to rotate in a direction
+    // draw bicycle to rotate in opposite direction of second bicycle
     leftWheelCenterX = byciclePosX;
     leftWheelCenterY = -0.4;
     leftWheelCenterZ = -1.2;
@@ -490,29 +491,15 @@ void draw3DBicycle2() {
     glPopMatrix();
 }
 
-void spinBicycle() {
-    // start spinning the bicycle around the building
-    if (isMoving) {
-        wheelAngle = 15;
-        bycicleRotation += speed;
-        degree += speed;
-        if (bycicleRotation > 360)
-            bycicleRotation = 0;
-        if (bycicleRotation > 360)
-            degree = 0;
-        glutPostRedisplay();
-    }
-
-}
-
 // ------------------- CIRCULAR STREET FUNCTIONS ----------------------------------------
 void drawDottedCircles() {
-    for (int i = 0; i < 10; ++i) {
+    int numOfDottedCircles = 18;
+    for (int i = 0; i < numOfDottedCircles; ++i) {
         // calculate angle for each dotted circle
-        float angle = i * (360.0 / 10);
+        float angle = i * (360.0 / numOfDottedCircles);
         float x = 1.41 * cos(angle * 3.14 / 180.0);
         float y = 1.41 * sin(angle * 3.14 / 180.0);
-        drawCircle(x, y, 0.49, 0.07, 100);
+        drawCircle(x, y, 0.49, 0.035, 100);
     }
 }
 
@@ -557,6 +544,21 @@ void display() {
     draw3DBicycle2();
     // save drawing changes
     glutSwapBuffers();
+}
+
+void idle() {
+    // start spinning the bicycle around the building when the mouse is clicked
+    if (isMoving) {
+        wheelAngle = 15;
+        bycicleRotation += speed;
+        degree += speed;
+        if (bycicleRotation > 360)
+            bycicleRotation = 0;
+        if (bycicleRotation > 360)
+            degree = 0;
+        glutPostRedisplay();
+    }
+
 }
 
 void key(unsigned char ch, int x, int y) {
@@ -743,7 +745,7 @@ int main(int argC, char *argV[])
     // mouse clicked func
     glutMouseFunc(mouse);
     // idle function
-    glutIdleFunc(spinBicycle);
+    glutIdleFunc(idle);
     // main loop to make the window appear
     glutMainLoop();
     // exit
