@@ -18,8 +18,8 @@
 // dimensions for camera
 GLfloat Cx = 0, Cy = 0.8, Cz = 4.2, degree = 0;
 bool rotation = false;
-GLfloat angleX = 0.45;
-GLfloat angleY = 0.0;
+GLfloat angleX = 20;
+GLfloat angleY = 0;
 GLfloat angleZ = 0.0;
 
 bool openedWindows = false, openedDoor = false;
@@ -366,7 +366,7 @@ void drawBody() {
 void drawSeat() {
     float X = leftWheelCenterX+0.06, Y = leftWheelCenterY + 0.26, Z = -leftWheelCenterZ+0.04;
 
-    BLACK
+    SILVER
     // Draw the top of the seat
     glBegin(GL_POLYGON);
     glVertex3f(X, Y, Z);
@@ -380,6 +380,7 @@ void drawSeat() {
     glEnd();
 
 
+    BLACK
     // Draw the bottom base part of the seat
     glBegin(GL_POLYGON);
     glVertex3f(X, Y - 0.02, Z);
