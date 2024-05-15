@@ -33,6 +33,7 @@ GLfloat wheelAngle = 0.0;
 GLfloat bycicleRotation = 0.0;
 bool isMoving = false;
 
+GLfloat speed = 0.1;
 using namespace std;
 
 // ------------------- COMMON FUNCTIONS ----------------------------------------
@@ -492,8 +493,8 @@ void spinBicycle() {
     // start spinning the bicycle around the building
     if (isMoving) {
         wheelAngle = 15;
-        bycicleRotation += 0.1;
-        degree += 0.1;
+        bycicleRotation += speed;
+        degree += speed;
         if (bycicleRotation > 360)
             bycicleRotation = 0;
         if (bycicleRotation > 360)
@@ -617,21 +618,20 @@ void key(unsigned char ch, int x, int y) {
     case 'f':
         // move bicycle in forward x-axis direction
         wheelAngle = 0;
-        byciclePosX += 0.04;
+        byciclePosX += speed/10;
         if(byciclePosX > 1.35)
 			byciclePosX = -1.45;
-        cout << byciclePosX << endl;
-        degree += 5;
+        degree += speed * 100;
         if(degree > 360)
 			degree = 0;
         break;
     case 'b':
         // move bicycle in backward x-axis direction
         wheelAngle = 0;
-        byciclePosX -= 0.04;
+        byciclePosX -= speed / 10;
         if(byciclePosX < -1.50)
             byciclePosX = 1.45;
-        degree -= 5;
+        degree -= speed * 100;
         if (degree < -360)
             degree = 0;
         break;
@@ -645,10 +645,18 @@ void key(unsigned char ch, int x, int y) {
         if(wheelAngle > -25)
             wheelAngle -= 5.0;
         break;
+    case '+':
+        // increase speed of spinning
+		speed += 0.05;
+		break;
+    case '-':
+		// decrease speed of spinning
+        if(speed > 0.05)
+            speed -= 0.05;
+        break;
     case 's':
         // camera rotation
         rotation = !rotation;
-        std::cout << "rotation: " <<  rotation << std::endl;
         break;
     case 'q':
         // initialize all values to default
@@ -691,6 +699,30 @@ void myInit() {
 // ------------------- MAIN FUNCTION ----------------------------------------
 int main(int argC, char *argV[])
 {
+
+    cout << "Press 'x' and shift 'X' to move camera in x-axis direction" << endl;
+    cout << "Press 'y' and shift 'Y' to move camera in y-axis direction" << endl;
+    cout << "Press 'z' and shift 'Z' to move camera in z-axis direction" << endl;
+    cout << "Press 's' to change mode of movement of camera to rotaion" << endl;
+
+    cout << "Press 'o' to open the door" << endl;
+    cout << "Press 'c' to close the door" << endl;
+    cout << "Press 'O' to open the windows" << endl;
+    cout << "Press 'C' to close the windows" << endl;
+
+    cout << "Press 'f' to move the bicycle in forward direction" << endl;
+    cout << "Press 'b' to move the bicycle in backward direction" << endl;
+    cout << "Press 'r' to rotate right front wheel of the bicycle" << endl;
+    cout << "Press 'l' to rotate left front wheel of the bicycle" << endl;
+
+    cout << "Press left click to start spinning the bicycle" << endl;
+    cout << "Press right click to stop spinning the bicycle" << endl;
+    cout << "Press '+' to increase speed of spinning" << endl;
+    cout << "Press '-' to decrease speed of spinning" << endl;
+    
+    cout << "Press 'esc' to exit" << endl;
+    cout << "Press 'q' to reset all values to default" << endl;
+
     // initialization function
     glutInit(&argC, argV);
     // initial position of window (space from left, space from up)
